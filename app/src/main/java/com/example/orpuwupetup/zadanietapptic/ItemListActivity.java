@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 public class ItemListActivity extends AppCompatActivity {
 
+    private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,7 +17,7 @@ public class ItemListActivity extends AppCompatActivity {
         ItemListFragment list = new ItemListFragment();
         android.support.v4.app.FragmentManager fragmentManager =  getSupportFragmentManager();
 
-        list.setUrl("http://dev.tapptic.com/test/json.php");
+        list.setUrl(PROVIDED_URL_ADDRESS);
 
         fragmentManager.beginTransaction()
                 .add(R.id.list_containter, list)
