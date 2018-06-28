@@ -16,14 +16,18 @@ import android.widget.TextView;
 
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemsAsyncLoader;
 import com.example.orpuwupetup.zadanietapptic.Utils.NetworkUtils;
+import com.example.orpuwupetup.zadanietapptic.data.Item;
+
+import java.util.List;
 
 /**
  * Created by cezar on 28.06.2018.
  */
 
-public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
+public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Item>> {
 
     private RecyclerView list;
+    private String url;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemListFragment(){}
@@ -49,17 +53,21 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @NonNull
     @Override
-    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        return new ItemsAsyncLoader(getActivity(), "http://dev.tapptic.com/test/json.php");
+    public Loader<List<Item>> onCreateLoader(int id, @Nullable Bundle args) {
+        return new ItemsAsyncLoader(getActivity(), this.url);
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-        Log.d("mamyJSONa", data );
+    public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
+        Log.d("mamyJSONa", data.get(5).getImageUrl() );
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String> loader) {
+    public void onLoaderReset(@NonNull Loader<List<Item>> loader) {
 
+    }
+
+    public void setUrl(String url){
+        this.url = url;
     }
 }

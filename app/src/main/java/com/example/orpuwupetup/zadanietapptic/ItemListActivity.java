@@ -14,6 +14,9 @@ public class ItemListActivity extends AppCompatActivity {
         // creating new ItemListFragment and adding it to the activity via fragmentManager
         ItemListFragment list = new ItemListFragment();
         android.support.v4.app.FragmentManager fragmentManager =  getSupportFragmentManager();
+
+        list.setUrl("http://dev.tapptic.com/test/json.php");
+
         fragmentManager.beginTransaction()
                 .add(R.id.list_containter, list)
                 .commit();
