@@ -36,5 +36,8 @@ public class ItemDetailsFragment extends Fragment {
 
         // return View
         return rootView;
+
+
+        //TODO: make setter methods for the TextView text and ImageView image, save those to local variables, then display them from those variables in correct places
     }
 }

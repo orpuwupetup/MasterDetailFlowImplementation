@@ -11,14 +11,11 @@ public class ItemListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
 
+        // creating new ItemListFragment and adding it to the activity via fragmentManager
         ItemListFragment list = new ItemListFragment();
-
         android.support.v4.app.FragmentManager fragmentManager =  getSupportFragmentManager();
-
         fragmentManager.beginTransaction()
                 .add(R.id.list_containter, list)
                 .commit();
-
-
     }
 }
