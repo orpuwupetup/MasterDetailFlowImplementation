@@ -18,10 +18,9 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (findViewById(R.id.tablet_landscape_layout) != null){
-            isTablet = true;
-        }
+        isTablet = isTablet();
 
+        // TODO: LOGS
         Log.d("mainactivitycreation", "islandscape" + isLandscape());
         Log.d("mainactivitycreation", "istablet" + isTablet);
         // creating new ItemListFragment and adding it to the activity via fragmentManager
@@ -33,6 +32,15 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         if(isTablet && isLandscape()){
             ItemDetailsFragment tabletDetails = new ItemDetailsFragment();
+            Intent landscapeIntent = getIntent();
+            if (landscapeIntent != null) {
+
+                Bundle itemInfo = landscapeIntent.getBundleExtra("infoBundle");
+                if(itemInfo != null) {
+                    tabletDetails.setItemName(itemInfo.getString("itemName"));
+                    tabletDetails.setItemImageUrl(itemInfo.getString("itemImageUrl"));
+                }
+            }
             fragmentManager.beginTransaction()
                     .add(R.id.details_tablet_container, tabletDetails)
                     .commit();
@@ -69,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             Bundle itemInfoBundle = new Bundle();
             itemInfoBundle.putString("itemName", name);
             itemInfoBundle.putString("itemImageUrl", url);
+            itemInfoBundle.putBoolean("isTablet", isTablet);
 
             Intent openDetailsIntent = new Intent(this, ItemDetailsActivity.class);
             openDetailsIntent.putExtra("infoBundle", itemInfoBundle);
@@ -81,5 +90,10 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         Display getOrient = getWindowManager().getDefaultDisplay();
         return getOrient.getWidth() > getOrient.getHeight();
 
+    }
+
+    private boolean isTablet(){
+        return findViewById(R.id.tablet_constraint_view) != null
+                || findViewById(R.id.tablet_landscape_layout) != null;
     }
 }

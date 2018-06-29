@@ -37,11 +37,21 @@ public class ItemDetailsFragment extends Fragment {
         itemImage = (ImageView) rootView.findViewById(R.id.detail_image);
         itemText = (TextView) rootView.findViewById(R.id.detail_text);
 
+        if(savedInstanceState != null){
+            itemName = savedInstanceState.getString("itemName");
+        }
         itemText.setText(itemName);
 
         // return View
         return rootView;
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString("itemName", itemName);
+        //TODO add url to this bundle
+        super.onSaveInstanceState(outState);
     }
 
     public void setItemName(String itemName){
