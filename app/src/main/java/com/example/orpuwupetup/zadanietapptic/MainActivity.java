@@ -3,8 +3,9 @@ package com.example.orpuwupetup.zadanietapptic;
 import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class ItemListActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemListFragment.DeepClickListener{
 
     private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
 
@@ -18,9 +19,15 @@ public class ItemListActivity extends AppCompatActivity {
         android.support.v4.app.FragmentManager fragmentManager =  getSupportFragmentManager();
 
         list.setUrl(PROVIDED_URL_ADDRESS);
+        list.setDeepListener(this);
 
         fragmentManager.beginTransaction()
                 .add(R.id.list_containter, list)
                 .commit();
+    }
+
+    @Override
+    public void deepOnListClick(String name, String url) {
+        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item url" + url, Toast.LENGTH_SHORT).show();
     }
 }

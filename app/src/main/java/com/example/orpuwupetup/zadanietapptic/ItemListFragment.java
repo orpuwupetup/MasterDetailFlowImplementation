@@ -32,6 +32,8 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     private RecyclerView list;
     private String url;
     private ItemAdapter adapter;
+    private DeepClickListener deepListener;
+    private List<Item> itemList;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemListFragment(){}
@@ -65,6 +67,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
+        itemList = data;
         adapter = new ItemAdapter(data.size(), this, data);
         list.setAdapter(adapter);
     }
@@ -80,6 +83,15 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-        Toast.makeText(getActivity(), "click position" + clickedItemIndex, Toast.LENGTH_SHORT).show();
+        Item clickedItem = itemList.get(clickedItemIndex);
+        deepListener.deepOnListClick(clickedItem.getName(), clickedItem.getImageUrl());
+    }
+
+    public void setDeepListener (DeepClickListener listener){
+        this.deepListener = listener;
+    }
+
+    public interface DeepClickListener {
+        void deepOnListClick(String name, String url);
     }
 }
