@@ -1,5 +1,6 @@
 package com.example.orpuwupetup.zadanietapptic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,8 @@ public class ItemDetailsFragment extends Fragment {
 
     private ImageView itemImage;
     private TextView itemText;
+    private String itemName;
+    private String itemImageUrl;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemDetailsFragment(){}
@@ -34,10 +37,17 @@ public class ItemDetailsFragment extends Fragment {
         itemImage = (ImageView) rootView.findViewById(R.id.detail_image);
         itemText = (TextView) rootView.findViewById(R.id.detail_text);
 
+        itemText.setText(itemName);
+
         // return View
         return rootView;
 
+    }
 
-        //TODO: make setter methods for the TextView text and ImageView image, save those to local variables, then display them from those variables in correct places
+    public void setItemName(String itemName){
+        this.itemName = itemName;
+    }
+    public void setItemImageUrl (String url){
+        this.itemImageUrl = url;
     }
 }

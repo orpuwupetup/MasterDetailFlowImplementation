@@ -1,6 +1,7 @@
 package com.example.orpuwupetup.zadanietapptic;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -29,5 +30,13 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     @Override
     public void deepOnListClick(String name, String url) {
         Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item url" + url, Toast.LENGTH_SHORT).show();
+
+        Bundle itemInfoBundle = new Bundle();
+        itemInfoBundle.putString("itemName", name);
+        itemInfoBundle.putString("itemImageUrl", url);
+
+        Intent openDetailsIntent = new Intent(this, ItemDetailsActivity.class);
+        openDetailsIntent.putExtra("infoBundle", itemInfoBundle);
+        startActivity(openDetailsIntent);
     }
 }
