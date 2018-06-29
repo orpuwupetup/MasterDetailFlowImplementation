@@ -8,16 +8,10 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemsAsyncLoader;
-import com.example.orpuwupetup.zadanietapptic.Utils.NetworkUtils;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
 import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
 
@@ -27,7 +21,8 @@ import java.util.List;
  * Created by cezar on 28.06.2018.
  */
 
-public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Item>>, ItemAdapter.ListItemClickListener {
+public class ItemListFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<List<Item>>, ItemAdapter.ListItemClickListener {
 
     private RecyclerView list;
     private String url;
@@ -41,7 +36,9 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     // inflating the fragment layout, and finding views
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         // inflate item details fragment layout
         View rootView = inflater.inflate(R.layout.fragment_item_list, container, false);
@@ -56,7 +53,6 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
         // return View
         return rootView;
 
-        //TODO: create local list of items to display, and set recycler view here with data provided from item list activity
     }
 
     @NonNull
