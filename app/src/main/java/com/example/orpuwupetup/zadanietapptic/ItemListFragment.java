@@ -65,8 +65,6 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
-        Log.d("mamyJSONa", data.get(5).getImageUrl() );
-
         adapter = new ItemAdapter(data.size(), this, data);
         list.setAdapter(adapter);
     }
