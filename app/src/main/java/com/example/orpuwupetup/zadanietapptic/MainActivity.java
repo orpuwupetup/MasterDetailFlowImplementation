@@ -12,6 +12,9 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
     public static boolean isTablet;
     private android.support.v4.app.FragmentManager fragmentManager;
+    private int selectedItemIndex;
+    ItemListFragment list;
+    public static int BACK_PRESSED_IN_DETAILS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,38 +23,69 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         isTablet = isTablet();
 
-        // TODO: LOGS
-        Log.d("mainactivitycreation", "islandscape" + isLandscape());
-        Log.d("mainactivitycreation", "istablet" + isTablet);
         // creating new ItemListFragment and adding it to the activity via fragmentManager
-        ItemListFragment list = new ItemListFragment();
+
         fragmentManager =  getSupportFragmentManager();
 
+        Intent landscapeIntent = getIntent();
+        Bundle itemInfo = null;
+        if (landscapeIntent != null) {
+            itemInfo = landscapeIntent.getBundleExtra("infoBundle2");
+        }
+
+        if(savedInstanceState != null){
+            selectedItemIndex = savedInstanceState.getInt("selectedIndex");
+        }
+
+        Log.d("MainIndexTOP", ""+selectedItemIndex);
+
+        list = new ItemListFragment();
         list.setUrl(PROVIDED_URL_ADDRESS);
         list.setDeepListener(this);
-
         if(isTablet && isLandscape()){
             ItemDetailsFragment tabletDetails = new ItemDetailsFragment();
-            Intent landscapeIntent = getIntent();
-            if (landscapeIntent != null) {
 
-                Bundle itemInfo = landscapeIntent.getBundleExtra("infoBundle");
                 if(itemInfo != null) {
+                    int clickedItemIndex = itemInfo.getInt("itemIndex");
                     tabletDetails.setItemName(itemInfo.getString("itemName"));
-                    tabletDetails.setItemImageUrl(itemInfo.getString("itemImageUrl"));
+
+                    selectedItemIndex = clickedItemIndex;
                 }
+            tabletDetails.setItemIndex(selectedItemIndex);
+
+
+            if(savedInstanceState == null) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.details_tablet_container, tabletDetails)
+                        .commit();
+                fragmentManager.beginTransaction()
+                        .add(R.id.list_tablet_container, list)
+                        .commit();
+            }else{
+                fragmentManager.beginTransaction()
+                        .replace(R.id.details_tablet_container, tabletDetails)
+                        .commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.list_tablet_container, list)
+                        .commit();
             }
-            fragmentManager.beginTransaction()
-                    .add(R.id.details_tablet_container, tabletDetails)
-                    .commit();
-            fragmentManager.beginTransaction()
-                    .add(R.id.list_tablet_container, list)
-                    .commit();
         }else{
-            fragmentManager.beginTransaction()
-                    .add(R.id.list_containter, list)
-                    .commit();
+
+            if(savedInstanceState == null) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.list_containter, list)
+                        .commit();
+            }else{
+                fragmentManager.beginTransaction()
+                        .replace(R.id.list_containter, list)
+                        .commit();
+
+            }
         }
+
+
+        Log.d("MainIndexBOTTOM", selectedItemIndex+"");
+
     }
 
     @Override
@@ -62,13 +96,34 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     }
 
     @Override
-    public void deepOnListClick(String name, String url) {
-        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item url" + url, Toast.LENGTH_SHORT).show();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("selectedIndex", selectedItemIndex);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        if(BACK_PRESSED_IN_DETAILS == 1) {
+            selectedItemIndex = ItemDetailsActivity.selectedItemIndex;
+            list.setSelectedItemIndex(selectedItemIndex);
+            Log.d("indexfromdetails", ""+ selectedItemIndex);
+            BACK_PRESSED_IN_DETAILS = 0;
+        }
+
+        super.onPostResume();
+    }
+
+    @Override
+    public void deepOnListClick(String name, int clickedItemIndex) {
+        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item index" + clickedItemIndex, Toast.LENGTH_SHORT).show();
+
+        selectedItemIndex = clickedItemIndex;
+        Log.d("main,clickedindex", "" + selectedItemIndex);
 
         if(isTablet && isLandscape()){
             ItemDetailsFragment newTabletDetails = new ItemDetailsFragment();
             newTabletDetails.setItemName(name);
-            newTabletDetails.setItemImageUrl(url);
+            newTabletDetails.setItemIndex(clickedItemIndex);
             fragmentManager.beginTransaction()
                     .replace(R.id.details_tablet_container, newTabletDetails)
                     .commit();
@@ -76,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         }else{
             Bundle itemInfoBundle = new Bundle();
             itemInfoBundle.putString("itemName", name);
-            itemInfoBundle.putString("itemImageUrl", url);
+            itemInfoBundle.putInt("itemIndex", clickedItemIndex);
             itemInfoBundle.putBoolean("isTablet", isTablet);
 
             Intent openDetailsIntent = new Intent(this, ItemDetailsActivity.class);

@@ -8,6 +8,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ public class ItemListFragment extends Fragment
 
     private RecyclerView list;
     private String url;
+    private int selectedItemIndex;
     private ItemAdapter adapter;
     private DeepClickListener deepListener;
     private List<Item> itemList;
@@ -43,6 +45,12 @@ public class ItemListFragment extends Fragment
         // inflate item details fragment layout
         View rootView = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        if(savedInstanceState != null){
+            selectedItemIndex = savedInstanceState.getInt("selectedItemIndex");
+            Log.d("listfragmentstate", "" + selectedItemIndex);
+        }
+        Log.d("listfragmentcreate", "" + selectedItemIndex);
+
         // get reference for RecyclerView included in fragment layout
         list = (RecyclerView) rootView.findViewById(R.id.rv_items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -53,6 +61,12 @@ public class ItemListFragment extends Fragment
         // return View
         return rootView;
 
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt("selectedItemIndex", selectedItemIndex);
+        super.onSaveInstanceState(outState);
     }
 
     @NonNull
@@ -79,15 +93,17 @@ public class ItemListFragment extends Fragment
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
+        selectedItemIndex = clickedItemIndex;
         Item clickedItem = itemList.get(clickedItemIndex);
-        deepListener.deepOnListClick(clickedItem.getName(), clickedItem.getImageUrl());
+        deepListener.deepOnListClick(clickedItem.getName(), clickedItemIndex);
     }
 
     public void setDeepListener (DeepClickListener listener){
         this.deepListener = listener;
     }
+    public void setSelectedItemIndex (int selectedItemIndex) { this.selectedItemIndex = selectedItemIndex;}
 
     public interface DeepClickListener {
-        void deepOnListClick(String name, String url);
+        void deepOnListClick(String name, int clickedItemIndex);
     }
 }

@@ -20,7 +20,7 @@ public class ItemDetailsFragment extends Fragment {
     private ImageView itemImage;
     private TextView itemText;
     private String itemName;
-    private String itemImageUrl;
+    private int itemIndex;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemDetailsFragment(){}
@@ -39,17 +39,21 @@ public class ItemDetailsFragment extends Fragment {
 
         if(savedInstanceState != null){
             itemName = savedInstanceState.getString("itemName");
+            itemIndex = savedInstanceState.getInt("itemIndex");
         }
-        itemText.setText(itemName);
+        itemText.setText(itemIndex+"");
 
         // return View
         return rootView;
 
     }
 
+
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString("itemName", itemName);
+        outState.putInt("itemIndex", itemIndex);
         //TODO add url to this bundle
         super.onSaveInstanceState(outState);
     }
@@ -57,7 +61,7 @@ public class ItemDetailsFragment extends Fragment {
     public void setItemName(String itemName){
         this.itemName = itemName;
     }
-    public void setItemImageUrl (String url){
-        this.itemImageUrl = url;
+    public void setItemIndex(int clickedItemIndex){
+        this.itemIndex = clickedItemIndex;
     }
 }
