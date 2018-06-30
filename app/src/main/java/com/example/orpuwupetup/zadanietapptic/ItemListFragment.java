@@ -15,13 +15,13 @@ import android.view.ViewGroup;
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemsAsyncLoader;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
 import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
-
 import java.util.List;
 
 /**
  * Created by cezar on 28.06.2018.
  */
 
+// Fragment used for displaying Items list
 public class ItemListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Item>>, ItemAdapter.ListItemClickListener {
 
@@ -45,30 +45,33 @@ public class ItemListFragment extends Fragment
         // inflate item details fragment layout
         View rootView = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        /*
+        if savedInstanceState is not 'empty', check there which item on the list should be selected
+        */
         if(savedInstanceState != null){
             selectedItemIndex = savedInstanceState.getInt("selectedItemIndex");
-            Log.d("listfragmentstate", "" + selectedItemIndex);
         }
-        Log.d("listfragmentcreate", "" + selectedItemIndex);
 
-        // get reference for RecyclerView included in fragment layout
-        list = (RecyclerView) rootView.findViewById(R.id.rv_items);
+        // get reference for RecyclerView included in fragment layout and set it up with manager
+        list = rootView.findViewById(R.id.rv_items);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
 
+        // initiate custom AsyncLoader to fetch data from the web on the background thread
         getLoaderManager().initLoader(1,null, this);
 
         // return View
         return rootView;
-
     }
 
+    // save instanceState of selectedItemIndex variable
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("selectedItemIndex", selectedItemIndex);
         super.onSaveInstanceState(outState);
     }
 
+    // mandatory methods for implementing LoaderCallbacks
     @NonNull
     @Override
     public Loader<List<Item>> onCreateLoader(int id, @Nullable Bundle args) {
@@ -78,8 +81,12 @@ public class ItemListFragment extends Fragment
     @Override
     public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
         itemList = data;
-        adapter = new ItemAdapter(data.size(), this, data);
-        list.setAdapter(adapter);
+
+        // if there were no problem with fetching data, display it via adapter in RecyclerView
+        if(data != null) {
+            adapter = new ItemAdapter(data.size(), this, data);
+            list.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -87,23 +94,33 @@ public class ItemListFragment extends Fragment
         loader.abandon();
     }
 
-    public void setUrl(String url){
-        this.url = url;
-    }
-
+    /*
+    on ListItemClick method 'throws' handling of clicks on the RecyclerView list even further 'up'
+    to the deepListener which is implemented in the MainActivity
+    */
     @Override
     public void onListItemClick(int clickedItemIndex) {
         selectedItemIndex = clickedItemIndex;
+
+        /*
+        this method takes index of clicked item, finds correct Item name corresponding to it in the
+        list and 'sends it' to be handled in MainActivity
+        */
         Item clickedItem = itemList.get(clickedItemIndex);
         deepListener.deepOnListClick(clickedItem.getText(), clickedItemIndex);
     }
 
+    // setter methods for some variables
+    public void setUrl(String url){
+        this.url = url;
+    }
     public void setDeepListener (DeepClickListener listener){
         this.deepListener = listener;
     }
     public void setSelectedItemIndex (int selectedItemIndex) { this.selectedItemIndex = selectedItemIndex;}
 
+    // interface needed to implement handling of clicks from RecyclerView in 'higher' classes
     public interface DeepClickListener {
-        void deepOnListClick(String name, int clickedItemIndex);
+        void deepOnListClick(String text, int clickedItemIndex);
     }
 }

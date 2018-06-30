@@ -6,6 +6,7 @@ import com.example.orpuwupetup.zadanietapptic.R;
  * Created by cezar on 28.06.2018.
  */
 
+// custom class for storing data loaded by the AsyncLoaders from the web
 public class Item {
 
     private String text;
@@ -15,7 +16,6 @@ public class Item {
         this.text = text;
         this.imageUrl = imageUrl;
     }
-
 
     // getter methods for the local variables
     public String getText(){return this.text;}
