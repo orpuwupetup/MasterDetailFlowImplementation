@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     public static boolean isTablet;
     private android.support.v4.app.FragmentManager fragmentManager;
     private int selectedItemIndex;
+    private String selectedItemName;
     ItemListFragment list;
     public static int BACK_PRESSED_IN_DETAILS = 0;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         if(savedInstanceState != null){
             selectedItemIndex = savedInstanceState.getInt("selectedIndex");
+            selectedItemName = savedInstanceState.getString("selectedName");
         }
 
         Log.d("MainIndexTOP", ""+selectedItemIndex);
@@ -47,11 +49,12 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
                 if(itemInfo != null) {
                     int clickedItemIndex = itemInfo.getInt("itemIndex");
-                    tabletDetails.setItemName(itemInfo.getString("itemName"));
-
+                    String clickedItemName = itemInfo.getString("itemName");
                     selectedItemIndex = clickedItemIndex;
+                    selectedItemName = clickedItemName;
                 }
             tabletDetails.setItemIndex(selectedItemIndex);
+            tabletDetails.setItemName(selectedItemName);
 
 
             if(savedInstanceState == null) {
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("selectedIndex", selectedItemIndex);
+        outState.putString("selectedName", selectedItemName);
         super.onSaveInstanceState(outState);
     }
 
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item index" + clickedItemIndex, Toast.LENGTH_SHORT).show();
 
         selectedItemIndex = clickedItemIndex;
+        selectedItemName = name;
         Log.d("main,clickedindex", "" + selectedItemIndex);
 
         if(isTablet && isLandscape()){

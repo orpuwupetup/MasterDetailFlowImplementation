@@ -41,7 +41,7 @@ public class ItemDetailsFragment extends Fragment {
             itemName = savedInstanceState.getString("itemName");
             itemIndex = savedInstanceState.getInt("itemIndex");
         }
-        itemText.setText(itemIndex+"");
+        itemText.setText(itemName);
 
         // return View
         return rootView;

@@ -25,6 +25,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         if(savedInstanceState != null){
             itemIndex = savedInstanceState.getInt("itemIndex");
+            itemName = savedInstanceState.getString("itemName");
         }
 
         if(isLandscape() && isTablet){
