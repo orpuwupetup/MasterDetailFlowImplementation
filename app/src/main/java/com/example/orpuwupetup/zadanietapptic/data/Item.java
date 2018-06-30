@@ -8,15 +8,16 @@ import com.example.orpuwupetup.zadanietapptic.R;
 
 public class Item {
 
-    private String name;
+    private String text;
     private String imageUrl;
 
-    public Item(String name, String imageUrl){
-        this.name = name;
+    public Item(String text, String imageUrl){
+        this.text = text;
         this.imageUrl = imageUrl;
     }
 
+
     // getter methods for the local variables
-    public String getName(){return this.name;}
+    public String getText(){return this.text;}
     public String getImageUrl(){return this.imageUrl;}
 }

@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                     selectedItemIndex = clickedItemIndex;
                     selectedItemName = clickedItemName;
                 }
+            if(savedInstanceState != null){
+                selectedItemIndex = savedInstanceState.getInt("selectedIndex");
+                selectedItemName = savedInstanceState.getString("selectedName");
+            }
             tabletDetails.setItemIndex(selectedItemIndex);
             tabletDetails.setItemName(selectedItemName);
 

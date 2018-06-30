@@ -95,7 +95,7 @@ public class ItemListFragment extends Fragment
     public void onListItemClick(int clickedItemIndex) {
         selectedItemIndex = clickedItemIndex;
         Item clickedItem = itemList.get(clickedItemIndex);
-        deepListener.deepOnListClick(clickedItem.getName(), clickedItemIndex);
+        deepListener.deepOnListClick(clickedItem.getText(), clickedItemIndex);
     }
 
     public void setDeepListener (DeepClickListener listener){

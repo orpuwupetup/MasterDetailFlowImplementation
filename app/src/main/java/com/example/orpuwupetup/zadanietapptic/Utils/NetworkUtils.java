@@ -3,6 +3,7 @@ package com.example.orpuwupetup.zadanietapptic.Utils;
 import android.text.TextUtils;
 
 import com.example.orpuwupetup.zadanietapptic.data.Item;
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -20,9 +21,17 @@ import java.util.ArrayList;
 
 public class NetworkUtils {
 
-    public static String getJSONString(String webURLString){
+    public final static String BASE_URL_FOR_TEXT_AND_IMAGE = "http://dev.tapptic.com/test/json.php?";
+
+    public static String getJSONString(String webURLString, String name){
 
         try {
+
+            if(name != null){
+                HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL_FOR_TEXT_AND_IMAGE).newBuilder();
+                urlBuilder.addQueryParameter("name", name);
+                webURLString = urlBuilder.build().toString();
+            }
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -41,7 +50,7 @@ public class NetworkUtils {
 
     public static ArrayList<Item> getItemList (String url){
 
-        String JSONResponse = getJSONString(url);
+        String JSONResponse = getJSONString(url, null);
         ArrayList<Item> items = parseJSONToItemList(JSONResponse);
         return items;
     }
@@ -72,5 +81,30 @@ public class NetworkUtils {
         }
 
         return items;
+    }
+
+    public static Item parseJSONToItemDetails (String JSONString){
+        if (TextUtils.isEmpty(JSONString)){
+            return null;
+        }
+        Item itemDetails = null;
+        try{
+            JSONObject rootObject = new JSONObject(JSONString);
+            String text = rootObject.getString("text");
+            String imageUrl = rootObject.getString("image");
+            itemDetails = new Item(text, imageUrl);
+        }catch(JSONException ex){
+            ex.printStackTrace();
+        }
+
+        return itemDetails;
+    }
+
+    public static Item getItemDetails (String name){
+
+        String JSONResponse = getJSONString(BASE_URL_FOR_TEXT_AND_IMAGE, name);
+
+        return parseJSONToItemDetails(JSONResponse);
+
     }
 }

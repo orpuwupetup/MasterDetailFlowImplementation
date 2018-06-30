@@ -11,6 +11,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private boolean isTablet;
     public static int selectedItemIndex;
     int itemIndex;
+    private String itemName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +21,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         Intent info = getIntent();
         Bundle itemInfo = info.getBundleExtra("infoBundle");
         isTablet = itemInfo.getBoolean("isTablet");
-        String itemName = itemInfo.getString("itemName");
+        itemName = itemInfo.getString("itemName");
         itemIndex = itemInfo.getInt("itemIndex");
 
         if(savedInstanceState != null){
@@ -56,6 +57,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
         MainActivity.BACK_PRESSED_IN_DETAILS = 1;
         selectedItemIndex = itemIndex;
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("itemIndex", itemIndex);
+        outState.putString("itemName", itemName);
+        super.onSaveInstanceState(outState);
     }
 
     private boolean isLandscape() {

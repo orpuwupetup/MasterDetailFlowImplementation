@@ -5,17 +5,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.orpuwupetup.zadanietapptic.Utils.ItemDetailsAsyncLoader;
+import com.example.orpuwupetup.zadanietapptic.data.Item;
+
 /**
  * Created by cezar on 28.06.2018.
  */
 
-public class ItemDetailsFragment extends Fragment {
+public class ItemDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Item>{
 
     private ImageView itemImage;
     private TextView itemText;
@@ -41,7 +46,8 @@ public class ItemDetailsFragment extends Fragment {
             itemName = savedInstanceState.getString("itemName");
             itemIndex = savedInstanceState.getInt("itemIndex");
         }
-        itemText.setText(itemName);
+
+        getLoaderManager().initLoader(2, null, this);
 
         // return View
         return rootView;
@@ -63,5 +69,24 @@ public class ItemDetailsFragment extends Fragment {
     }
     public void setItemIndex(int clickedItemIndex){
         this.itemIndex = clickedItemIndex;
+    }
+
+    @NonNull
+    @Override
+    public Loader<Item> onCreateLoader(int id, @Nullable Bundle args) {
+        return new ItemDetailsAsyncLoader(getActivity(), this.itemName);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Item> loader, Item data) {
+        if(data != null) {
+            itemText.setText(data.getText());
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Item> loader) {
+        loader.abandon();
     }
 }
