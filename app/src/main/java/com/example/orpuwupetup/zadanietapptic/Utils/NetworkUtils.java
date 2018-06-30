@@ -130,6 +130,7 @@ public class NetworkUtils {
 
     // public method which other classes can call to get details of Item from the web
     public static Item getItemDetails(String name) {
+
         String JSONResponse = getJSONString(BASE_URL_FOR_TEXT_AND_IMAGE, name);
         return parseJSONToItemDetails(JSONResponse);
     }

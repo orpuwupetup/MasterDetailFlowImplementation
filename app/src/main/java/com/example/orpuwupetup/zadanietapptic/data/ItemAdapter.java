@@ -1,7 +1,11 @@
 package com.example.orpuwupetup.zadanietapptic.data;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.orpuwupetup.zadanietapptic.R;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.util.List;
 
@@ -23,15 +30,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     final private ListItemClickListener onClickListener;
     private List<Item> itemList;
     private int numberOfItems;
+    private ColorStateList textColor;
+    public static int selectedItem = 1;
 
     /*
     constructor taking List of items to display, custom clickListener to provide responsiveness
-    to clicks, and numberOfItems variable needed to construct RecyclerView
+    to clicks, numberOfItems variable needed to construct RecyclerView and ColorStateList for
+    changing color of the text according to what state it is in
     */
-    public ItemAdapter(int numberOfItems, ListItemClickListener listener, List<Item> itemList) {
+    public ItemAdapter(int numberOfItems, ListItemClickListener listener, List<Item> itemList, ColorStateList textColor) {
         this.itemList = itemList;
         this.onClickListener = listener;
         this.numberOfItems = numberOfItems;
+        this.textColor = textColor;
     }
 
     /*
@@ -63,6 +74,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         holder.listItemText.setText(itemList.get(position).getText());
+        holder.listItemText.setTextColor(textColor);
     }
 
     // last mandatory method for RecyclerView adapter
@@ -87,6 +99,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     */
     class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        ConstraintLayout mainLayout;
         ImageView listItemImage;
         TextView listItemText;
 
@@ -100,6 +113,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             */
             listItemImage = itemView.findViewById(R.id.list_item_image);
             listItemText = itemView.findViewById(R.id.list_item_text);
+            mainLayout = itemView.findViewById(R.id.constraint_layout_list_item);
+
+
             itemView.setOnClickListener(this);
         }
 

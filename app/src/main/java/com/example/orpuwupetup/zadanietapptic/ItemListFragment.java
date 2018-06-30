@@ -1,8 +1,10 @@
 package com.example.orpuwupetup.zadanietapptic;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -60,6 +62,7 @@ public class ItemListFragment extends Fragment
         // initiate custom AsyncLoader to fetch data from the web on the background thread
         getLoaderManager().initLoader(1,null, this);
 
+
         // return View
         return rootView;
     }
@@ -84,9 +87,21 @@ public class ItemListFragment extends Fragment
 
         // if there were no problem with fetching data, display it via adapter in RecyclerView
         if(data != null) {
-            adapter = new ItemAdapter(data.size(), this, data);
+
+            /*
+            ColorStateList is set differently for text color (via code, programmatically) and for
+            background color (via xml code in layout xml file) to test both methods
+            */
+            ColorStateList textColor = getResources().getColorStateList(R.color.state_dependent_text_color);
+            adapter = new ItemAdapter(data.size(), this, data, textColor);
             list.setAdapter(adapter);
+
+
+
+//            Log.d("itemlistfragment", "" + (v == null));
         }
+
+
     }
 
     @Override
@@ -101,6 +116,9 @@ public class ItemListFragment extends Fragment
     @Override
     public void onListItemClick(int clickedItemIndex) {
         selectedItemIndex = clickedItemIndex;
+
+        //TODO select and unselect correct views!!!
+        list.findViewHolderForAdapterPosition(clickedItemIndex).itemView.setSelected(true);
 
         /*
         this method takes index of clicked item, finds correct Item name corresponding to it in the
