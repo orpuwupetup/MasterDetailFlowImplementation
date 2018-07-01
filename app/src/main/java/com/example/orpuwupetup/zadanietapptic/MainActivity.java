@@ -6,12 +6,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
 
 /*
@@ -21,9 +19,9 @@ and to display both list and details in landscape mode of bigger devices (tablet
 public class MainActivity extends AppCompatActivity implements ItemListFragment.DeepClickListener {
 
     // constants
-    private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
-    private final static String DEFAULT_SELECTED_ITEM_NAME = "1";
-    private final static int DEFAULT_SELECTED_ITEM_INDEX = 0;
+    public final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
+    public final static String DEFAULT_SELECTED_ITEM_NAME = "1";
+    public final static int DEFAULT_SELECTED_ITEM_INDEX = 0;
 
     public static boolean isTablet;
     public static int BACK_PRESSED_IN_DETAILS = 0;
@@ -34,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     private TextView connectionWarning;
     private View divider;
     private boolean isConnected;
+    private ImageButton refresh;
+    public static boolean wasRecreatedAfterNoConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +69,6 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             selectedItemName = savedInstanceState.getString(getString(R.string.selected_name_key));
         }
 
-        // TODO delete log
-        Log.d("MainIndexTOP", "" + selectedItemIndex);
-
         /*
         code for creating new fragments, filling and displaying them according to when they are
         created or what device we are using (I THINK that it can be done in better way, so that it
@@ -82,17 +79,27 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         savedInstanceState was different than null)
         */
         list = new ItemListFragment();
-        list.setUrl(PROVIDED_URL_ADDRESS);
         list.setDeepListener(this);
 
         divider = findViewById(R.id.pane_divider);
         connectionWarning = findViewById(R.id.no_connection_warning);
+
         if (isTablet && isLandscape()) {
+
+            refresh = findViewById(R.id.refresh_button);
+            refresh.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    wasRecreatedAfterNoConnection = true;
+                    recreate();
+                }
+            });
 
             if (isConnected) {
 
                 connectionWarning.setVisibility(View.GONE);
                 divider.setVisibility(View.VISIBLE);
+                refresh.setVisibility(View.GONE);
             /*
             we have to create ItemDetailsFragment only when we are in landscape orientation, while
             using tablet
@@ -119,6 +126,12 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                 if (savedInstanceState != null) {
                     selectedItemIndex = savedInstanceState.getInt(getString(R.string.selected_index_key));
                     selectedItemName = savedInstanceState.getString(getString(R.string.selected_name_key));
+                }
+
+                if (wasRecreatedAfterNoConnection){
+                    wasRecreatedAfterNoConnection = false;
+                    selectedItemIndex = 1;
+                    selectedItemName = "1";
                 }
 
                 tabletDetails.setItemIndex(selectedItemIndex);
@@ -149,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                 }
             } else {
                 connectionWarning.setVisibility(View.VISIBLE);
+                refresh.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.GONE);
             }
 
@@ -166,12 +180,27 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             itemInfo.putBoolean(getString(R.string.is_tablet_key), isTablet);
             itemInfo.putString(getString(R.string.item_name_key), selectedItemName);
             itemInfo.putInt(getString(R.string.item_index_key), selectedItemIndex);
-            info.putExtra(getString(R.string.bundle_name_for_intent_opening_details_activity), itemInfo);
+            info.putExtra(
+                    getString(R.string.bundle_name_for_intent_opening_details_activity), itemInfo);
             ItemDetailsActivity.wasLandscapeFromDetails = false;
             startActivity(info);
+
+            /*
+            this check is here to prevent creating detail and list fragment in specific, provided
+            case
+            */
+        }else if (!isConnected && isLandscape() && isTablet){
+            refresh.setVisibility(View.VISIBLE);
+            connectionWarning.setVisibility(View.VISIBLE);
         } else {
             list.setSelectedItemIndex(selectedItemIndex);
 
+            // if user clicked refresh button (and has connection now), select Item at index 0
+            if (wasRecreatedAfterNoConnection){
+                wasRecreatedAfterNoConnection = false;
+                selectedItemName = DEFAULT_SELECTED_ITEM_NAME;
+                selectedItemIndex = DEFAULT_SELECTED_ITEM_INDEX;
+            }
             // same as in comment in line 128
             if (savedInstanceState == null) {
                 fragmentManager.beginTransaction()
@@ -184,8 +213,6 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             }
         }
 
-        //TODO delete Log
-        Log.d("MainIndexBOTTOM", selectedItemIndex + "");
         ItemAdapter.selectedItem = selectedItemIndex;
     }
 
@@ -218,6 +245,12 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             selectedItemIndex = ItemDetailsActivity.selectedItemIndex;
             list.setSelectedItemIndex(selectedItemIndex);
 
+            if(wasRecreatedAfterNoConnection){
+                wasRecreatedAfterNoConnection = false;
+                selectedItemIndex = DEFAULT_SELECTED_ITEM_INDEX;
+                selectedItemName = DEFAULT_SELECTED_ITEM_NAME;
+            }
+
             /*
             if we go back from portrait details activity after returning there from tablet landscape
             orientation, we have to put our list fragment inside its container again
@@ -227,8 +260,6 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                         .replace(R.id.list_containter, list)
                         .commit();
             }
-            // TODO delete log
-            Log.d("indexfromdetails", "" + selectedItemIndex);
             BACK_PRESSED_IN_DETAILS = 0;
         }
         super.onPostResume();
@@ -241,16 +272,9 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     @Override
     public void deepOnListClick(String name, int clickedItemIndex) {
 
-        //TODO delete Toast
-        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item index"
-                + clickedItemIndex, Toast.LENGTH_SHORT).show();
-
         // save what Item was clicked to mark it as selected
         selectedItemIndex = clickedItemIndex;
         selectedItemName = name;
-
-        //TODO delete log
-        Log.d("main,clickedindex", "" + selectedItemIndex);
 
         /*
         if we are in landscape orientation while using tablet, we want to both mark Item in list as

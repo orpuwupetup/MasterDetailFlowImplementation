@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,8 +36,9 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
     private TextView connectionWarning;
     private String itemName;
     private int itemIndex;
-    private boolean isConnected;
+    public static boolean isConnected;
     private ProgressBar progressIndicator;
+    private ImageButton refresh;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemDetailsFragment(){}
@@ -59,10 +61,18 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
         in my opinion DataBinding, because it wasn't listed in libraries that I can use in this
         exercise ¯\_(ツ)_/¯ )
         */
-        itemImage = (ImageView) rootView.findViewById(R.id.detail_image);
-        itemText = (TextView) rootView.findViewById(R.id.detail_text);
+        itemImage = rootView.findViewById(R.id.detail_image);
+        itemText = rootView.findViewById(R.id.detail_text);
         connectionWarning = rootView.findViewById(R.id.no_connection_warning);
         progressIndicator = rootView.findViewById(R.id.progress_bar_indicator);
+        refresh = rootView.findViewById(R.id.refresh_button);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.wasRecreatedAfterNoConnection = true;
+                getActivity().recreate();
+            }
+        });
 
         // set correct variables to their savedInstanceState after device was rotated (etc.)
         if(savedInstanceState != null){
@@ -76,15 +86,23 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
         */
         if(isConnected) {
 
+            if(MainActivity.wasRecreatedAfterNoConnection){
+                MainActivity.wasRecreatedAfterNoConnection = false;
+                itemIndex = MainActivity.DEFAULT_SELECTED_ITEM_INDEX;
+                itemName = MainActivity.DEFAULT_SELECTED_ITEM_NAME;
+            }
+
             /*
             show progress bar while data is loading, so that user will know that something is
             happening (better user experience)
             */
             progressIndicator.setVisibility(View.VISIBLE);
+            refresh.setVisibility(View.GONE);
             connectionWarning.setVisibility(View.GONE);
             getLoaderManager().initLoader(2, null, this);
         }else{
             connectionWarning.setVisibility(View.VISIBLE);
+            refresh.setVisibility(View.VISIBLE);
         }
 
         // return View

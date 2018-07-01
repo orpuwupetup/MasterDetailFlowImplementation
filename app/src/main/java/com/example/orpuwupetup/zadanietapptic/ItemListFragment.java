@@ -7,19 +7,17 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemsAsyncLoader;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
 import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
@@ -37,12 +35,12 @@ public class ItemListFragment extends Fragment
     private RecyclerView list;
     private TextView connectionWarning;
     private ProgressBar progressIndicator;
-    private String url;
     private int selectedItemIndex;
     private ItemAdapter adapter;
     private DeepClickListener deepListener;
     private List<Item> itemList;
     private boolean isConnected;
+    private ImageButton refresh;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemListFragment() {
@@ -70,10 +68,20 @@ public class ItemListFragment extends Fragment
             selectedItemIndex = savedInstanceState.getInt(getString(R.string.selected_item_index_key));
         }
 
+
         // get reference for RecyclerView included in fragment layout and set it up with manager
         list = rootView.findViewById(R.id.rv_items);
         connectionWarning = rootView.findViewById(R.id.no_connection_warning);
         progressIndicator = rootView.findViewById(R.id.progress_bar_indicator);
+        refresh = rootView.findViewById(R.id.refresh_button);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.wasRecreatedAfterNoConnection = true;
+                getActivity().recreate();
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
 
@@ -83,7 +91,12 @@ public class ItemListFragment extends Fragment
         */
         if(isConnected) {
             connectionWarning.setVisibility(View.GONE);
+            refresh.setVisibility(View.GONE);
 
+            if(MainActivity.wasRecreatedAfterNoConnection){
+                MainActivity.wasRecreatedAfterNoConnection = false;
+                selectedItemIndex = MainActivity.DEFAULT_SELECTED_ITEM_INDEX;
+            }
             /*
             show progress bar while data is loading, so that user will know that something is
             happening (better user experience)
@@ -92,12 +105,13 @@ public class ItemListFragment extends Fragment
             getLoaderManager().initLoader(1, null, this);
         }else{
             connectionWarning.setVisibility(View.VISIBLE);
+            refresh.setVisibility(View.VISIBLE);
         }
-
 
         // return View
         return rootView;
     }
+
 
     // save instanceState of selectedItemIndex variable
     @Override
@@ -110,7 +124,7 @@ public class ItemListFragment extends Fragment
     @NonNull
     @Override
     public Loader<List<Item>> onCreateLoader(int id, @Nullable Bundle args) {
-        return new ItemsAsyncLoader(getActivity(), this.url);
+        return new ItemsAsyncLoader(getActivity());
     }
 
     @Override
@@ -127,6 +141,10 @@ public class ItemListFragment extends Fragment
             ColorStateList textColor = getResources().getColorStateList(R.color.state_dependent_text_color);
             adapter = new ItemAdapter(data.size(), this, data, textColor, getActivity());
             list.setAdapter(adapter);
+
+            // scroll list so that selected view is visible on the screen
+            LinearLayoutManager layoutManager = (LinearLayoutManager) list.getLayoutManager();
+            layoutManager.scrollToPositionWithOffset(selectedItemIndex, (int) getResources().getDimension(R.dimen.margin_bigger));
 
             // hide progress bar when data is loaded
             progressIndicator.setVisibility(View.GONE);
@@ -180,15 +198,9 @@ public class ItemListFragment extends Fragment
         deepListener.deepOnListClick(clickedItem.getText(), clickedItemIndex);
     }
 
-    // setter methods for some variables
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public void setDeepListener(DeepClickListener listener) {
         this.deepListener = listener;
     }
-
     public void setSelectedItemIndex(int selectedItemIndex) {
         this.selectedItemIndex = selectedItemIndex;
     }

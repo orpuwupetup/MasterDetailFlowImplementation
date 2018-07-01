@@ -2,8 +2,6 @@ package com.example.orpuwupetup.zadanietapptic.data;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.orpuwupetup.zadanietapptic.R;
 import com.squareup.picasso.Picasso;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.util.List;
 
@@ -66,8 +61,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         // inflating view from correct template and context
         View view = inflater.inflate(layoutForListItem, parent, false);
-        ItemViewHolder viewHolder = new ItemViewHolder(view);
-        return viewHolder;
+        return new ItemViewHolder(view);
     }
 
     /*

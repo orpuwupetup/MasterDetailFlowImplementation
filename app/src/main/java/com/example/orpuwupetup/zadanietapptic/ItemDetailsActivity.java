@@ -57,8 +57,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
             upIntent.putExtra(getString(R.string.bundle_name_for_intent_opening_main_activity), itemInfo);
             startActivity(upIntent);
 
-
-
             /*
             if the savedInstanceState is "empty", create new item detail fragment and display it on
             the screen with help of fragmentManager
@@ -90,6 +88,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
         displayed item index from here
         */
         MainActivity.BACK_PRESSED_IN_DETAILS = 1;
+
+        if(!ItemDetailsFragment.isConnected){
+            MainActivity.wasRecreatedAfterNoConnection = true;
+        }
         selectedItemIndex = itemIndex;
         super.onBackPressed();
     }

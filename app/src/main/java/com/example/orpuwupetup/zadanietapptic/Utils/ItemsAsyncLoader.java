@@ -1,10 +1,9 @@
 package com.example.orpuwupetup.zadanietapptic.Utils;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 
+import com.example.orpuwupetup.zadanietapptic.MainActivity;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
-
 import java.util.List;
 
 /**
@@ -19,9 +18,9 @@ public class ItemsAsyncLoader extends android.support.v4.content.AsyncTaskLoader
 
     private String url;
 
-    public ItemsAsyncLoader(Context context, String url){
+    public ItemsAsyncLoader(Context context){
         super(context);
-        this.url = url;
+        this.url = MainActivity.PROVIDED_URL_ADDRESS;
     }
 
     @Override

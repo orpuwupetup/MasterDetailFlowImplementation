@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraint_layout_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/state_dependent_background_color"
-    android:id="@+id/constraint_layout_list_item"
-
     >
 
     <ImageView
         android:id="@+id/list_item_image"
         android:layout_width="@dimen/list_image_size"
         android:layout_height="@dimen/list_image_size"
-        android:layout_marginTop="@dimen/margin_smaller"
         android:layout_marginBottom="@dimen/margin_smaller"
         android:layout_marginLeft="@dimen/margin_bigger"
         android:layout_marginStart="@dimen/margin_bigger"
+        android:layout_marginTop="@dimen/margin_smaller"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,11 +23,11 @@
         android:id="@+id/list_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:duplicateParentState="true"
         android:layout_marginEnd="@dimen/margin_bigger"
         android:layout_marginLeft="@dimen/margin_the_biggest"
         android:layout_marginRight="@dimen/margin_bigger"
         android:layout_marginStart="@dimen/margin_the_biggest"
+        android:duplicateParentState="true"
         android:textSize="@dimen/text_size_list_item"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

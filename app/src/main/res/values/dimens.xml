@@ -7,4 +7,5 @@
     <dimen name="margin_the_biggest">32dp</dimen>
     <dimen name="text_size_list_item">32sp</dimen>
     <dimen name="text_size_details_fragment">48sp</dimen>
+    <dimen name="refresh_button_dimensions">48dp</dimen>
 </resources>

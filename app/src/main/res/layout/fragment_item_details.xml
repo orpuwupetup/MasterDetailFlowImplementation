@@ -4,20 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/detail_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_bigger"
-        android:layout_marginLeft="@dimen/margin_bigger"
-        android:layout_marginStart="@dimen/margin_bigger"
-        android:layout_marginRight="@dimen/margin_bigger"
-        android:layout_marginEnd="@dimen/margin_bigger"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="0dp"
@@ -25,6 +11,20 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintGuide_percent="0.6"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/detail_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/margin_bigger"
+        android:layout_marginLeft="@dimen/margin_bigger"
+        android:layout_marginRight="@dimen/margin_bigger"
+        android:layout_marginStart="@dimen/margin_bigger"
+        android:layout_marginTop="@dimen/margin_bigger"
+        app:layout_constraintBottom_toBottomOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
@@ -51,21 +51,37 @@
 
     <TextView
         android:id="@+id/no_connection_warning"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/no_internet_details_indicator"/>
+        android:text="@string/no_internet_details_indicator"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/refresh_button"
+        android:layout_width="@dimen/refresh_button_dimensions"
+        android:layout_height="@dimen/refresh_button_dimensions"
+        android:layout_marginTop="@dimen/margin_bigger"
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/refresh_icon"
+        app:layout_constraintEnd_toEndOf="@id/no_connection_warning"
+        app:layout_constraintStart_toStartOf="@id/no_connection_warning"
+        app:layout_constraintTop_toBottomOf="@id/no_connection_warning" />
 
 
     <ProgressBar
         android:id="@+id/progress_bar_indicator"
         android:layout_width="@dimen/progress_bar_dimensions"
         android:layout_height="@dimen/progress_bar_dimensions"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
