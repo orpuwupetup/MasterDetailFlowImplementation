@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Display;
 import android.widget.Toast;
 
+import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
+
 /*
 activity used to display list of Items while in portrait mode and landscape mode in smaller devices
 and to display both list and details in landscape mode of bigger devices (tablets)
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
             tabletDetails.setItemIndex(selectedItemIndex);
             tabletDetails.setItemName(selectedItemName);
+            list.setSelectedItemIndex(selectedItemIndex);
 
             /*
             if savedInstanceState is null, we want to add new fragments to correct containers, but
@@ -137,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         //TODO delete Log
         Log.d("MainIndexBOTTOM", selectedItemIndex+"");
+        ItemAdapter.selectedItem = selectedItemIndex;
 
     }
 

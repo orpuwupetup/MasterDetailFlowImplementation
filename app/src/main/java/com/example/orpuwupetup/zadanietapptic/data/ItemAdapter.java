@@ -31,7 +31,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private List<Item> itemList;
     private int numberOfItems;
     private ColorStateList textColor;
-    public static int selectedItem = 1;
+    public static int selectedItem = 0;
 
     /*
     constructor taking List of items to display, custom clickListener to provide responsiveness
@@ -75,6 +75,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         holder.listItemText.setText(itemList.get(position).getText());
         holder.listItemText.setTextColor(textColor);
+        if(position == selectedItem) {
+            holder.mainLayout.setSelected(true);
+        }else{
+            holder.mainLayout.setSelected(false);
+        }
     }
 
     // last mandatory method for RecyclerView adapter
