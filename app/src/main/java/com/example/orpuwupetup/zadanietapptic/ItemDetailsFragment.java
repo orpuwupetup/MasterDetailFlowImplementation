@@ -66,8 +66,8 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
 
         // set correct variables to their savedInstanceState after device was rotated (etc.)
         if(savedInstanceState != null){
-            itemName = savedInstanceState.getString("itemName");
-            itemIndex = savedInstanceState.getInt("itemIndex");
+            itemName = savedInstanceState.getString(getString(R.string.item_name_key));
+            itemIndex = savedInstanceState.getInt(getString(R.string.item_index_key));
         }
 
         /*
@@ -96,8 +96,8 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("itemName", itemName);
-        outState.putInt("itemIndex", itemIndex);
+        outState.putString(getString(R.string.item_name_key), itemName);
+        outState.putInt(getString(R.string.item_index_key), itemIndex);
         super.onSaveInstanceState(outState);
     }
 

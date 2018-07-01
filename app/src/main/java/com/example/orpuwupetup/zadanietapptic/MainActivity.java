@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         Intent landscapeIntent = getIntent();
         Bundle itemInfo = null;
         if (landscapeIntent != null) {
-            itemInfo = landscapeIntent.getBundleExtra("infoBundle2");
+            itemInfo = landscapeIntent.getBundleExtra(getString(R.string.bundle_name_for_intent_opening_main_activity));
         }
         /*
         fetching data from savedInstanceState, after activity is recreated after orientation change
         */
         if (savedInstanceState != null) {
-            selectedItemIndex = savedInstanceState.getInt("selectedIndex");
-            selectedItemName = savedInstanceState.getString("selectedName");
+            selectedItemIndex = savedInstanceState.getInt(getString(R.string.selected_index_key));
+            selectedItemName = savedInstanceState.getString(getString(R.string.selected_name_key));
         }
 
         // TODO delete log
@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                     to landscape on tablet, so we have to take our values from there and set them
                     here
                     */
-                    int clickedItemIndex = itemInfo.getInt("itemIndex");
-                    String clickedItemName = itemInfo.getString("itemName");
+                    int clickedItemIndex = itemInfo.getInt(getString(R.string.item_index_key));
+                    String clickedItemName = itemInfo.getString(getString(R.string.item_name_key));
                     selectedItemIndex = clickedItemIndex;
                     selectedItemName = clickedItemName;
                 }
@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             landscapeIntent is different than null
             */
                 if (savedInstanceState != null) {
-                    selectedItemIndex = savedInstanceState.getInt("selectedIndex");
-                    selectedItemName = savedInstanceState.getString("selectedName");
+                    selectedItemIndex = savedInstanceState.getInt(getString(R.string.selected_index_key));
+                    selectedItemName = savedInstanceState.getString(getString(R.string.selected_name_key));
                 }
 
                 tabletDetails.setItemIndex(selectedItemIndex);
@@ -163,10 +163,10 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             // get data to be displayed about Item details from sent intent
             Intent info = new Intent(this, ItemDetailsActivity.class);
             itemInfo = new Bundle();
-            itemInfo.putBoolean("isTablet", isTablet);
-            itemInfo.putString("itemName", selectedItemName);
-            itemInfo.putInt("itemIndex", selectedItemIndex);
-            info.putExtra("infoBundle", itemInfo);
+            itemInfo.putBoolean(getString(R.string.is_tablet_key), isTablet);
+            itemInfo.putString(getString(R.string.item_name_key), selectedItemName);
+            itemInfo.putInt(getString(R.string.item_index_key), selectedItemIndex);
+            info.putExtra(getString(R.string.bundle_name_for_intent_opening_details_activity), itemInfo);
             ItemDetailsActivity.wasLandscapeFromDetails = false;
             startActivity(info);
         } else {
@@ -203,8 +203,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     // saving important values when device is rotated (etc)
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("selectedIndex", selectedItemIndex);
-        outState.putString("selectedName", selectedItemName);
+        outState.putInt(getString(R.string.selected_index_key), selectedItemIndex);
+        outState.putString(getString(R.string.selected_name_key), selectedItemName);
         super.onSaveInstanceState(outState);
     }
 
@@ -271,11 +271,11 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         */
         } else {
             Bundle itemInfoBundle = new Bundle();
-            itemInfoBundle.putString("itemName", name);
-            itemInfoBundle.putInt("itemIndex", clickedItemIndex);
-            itemInfoBundle.putBoolean("isTablet", isTablet);
+            itemInfoBundle.putString(getString(R.string.item_name_key), name);
+            itemInfoBundle.putInt(getString(R.string.item_index_key), clickedItemIndex);
+            itemInfoBundle.putBoolean(getString(R.string.is_tablet_key), isTablet);
             Intent openDetailsIntent = new Intent(this, ItemDetailsActivity.class);
-            openDetailsIntent.putExtra("infoBundle", itemInfoBundle);
+            openDetailsIntent.putExtra(getString(R.string.bundle_name_for_intent_opening_details_activity), itemInfoBundle);
             startActivity(openDetailsIntent);
         }
     }

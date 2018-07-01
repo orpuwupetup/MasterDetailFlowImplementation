@@ -3,4 +3,12 @@
     <string name="no_internet_landscape_tablet">┻━┻ ︵ヽ(`Д´)ﾉ︵﻿ ┻━┻\nNo internet connection</string>
     <string name="no_internet_details_indicator">No internet connection ¯_(ツ)_/¯</string>
     <string name="no_internet_list_indicator">(╯°□°）╯︵ ┻━┻ No internet connection</string>
+    <string name="bundle_name_for_intent_opening_details_activity">infoBundle</string>
+    <string name="is_tablet_key">isTablet</string>
+    <string name="item_name_key">itemName</string>
+    <string name="item_index_key">itemIndex</string>
+    <string name="bundle_name_for_intent_opening_main_activity">infoBundle2</string>
+    <string name="selected_item_index_key">selectedItemIndex</string>
+    <string name="selected_index_key">selectedIndex</string>
+    <string name="selected_name_key">selectedName</string>
 </resources>

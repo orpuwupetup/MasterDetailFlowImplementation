@@ -24,7 +24,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintGuide_percent="0.5"
+        app:layout_constraintGuide_percent="0.6"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
@@ -43,7 +43,7 @@
             android:layout_marginRight="@dimen/margin_bigger"
             android:layout_marginStart="@dimen/margin_bigger"
             android:gravity="center"
-            android:textSize="64sp"
+            android:textSize="@dimen/text_size_details_fragment"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

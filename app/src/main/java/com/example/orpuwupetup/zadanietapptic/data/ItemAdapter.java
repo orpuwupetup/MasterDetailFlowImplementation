@@ -33,7 +33,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private int numberOfItems;
     private ColorStateList textColor;
     public static int selectedItem = 0;
-    Context context;
+    private Context context;
 
     /*
     constructor taking List of items to display, custom clickListener to provide responsiveness
@@ -79,6 +79,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         holder.listItemText.setText(itemList.get(position).getText());
         holder.listItemText.setTextColor(textColor);
 
+        // load correct image with picasso framework
         Picasso.with(context).load(itemList.get(position).getImageUrl()).fit().centerInside().into(holder.listItemImage);
         if(position == selectedItem) {
             holder.mainLayout.setSelected(true);
@@ -95,7 +96,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     // interface made to provide click handling for our custom adapter
     public interface ListItemClickListener {
-
 
         /*
         we need just index of the clicked item, so we create one method, that took it as a parameter
@@ -124,8 +124,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             listItemImage = itemView.findViewById(R.id.list_item_image);
             listItemText = itemView.findViewById(R.id.list_item_text);
             mainLayout = itemView.findViewById(R.id.constraint_layout_list_item);
-
-
             itemView.setOnClickListener(this);
         }
 
@@ -137,7 +135,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             onClickListener.onListItemClick(clickedPosition);
-
         }
     }
 }

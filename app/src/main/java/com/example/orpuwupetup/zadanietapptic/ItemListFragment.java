@@ -67,7 +67,7 @@ public class ItemListFragment extends Fragment
         if savedInstanceState is not 'empty', check there which item on the list should be selected
         */
         if (savedInstanceState != null) {
-            selectedItemIndex = savedInstanceState.getInt("selectedItemIndex");
+            selectedItemIndex = savedInstanceState.getInt(getString(R.string.selected_item_index_key));
         }
 
         // get reference for RecyclerView included in fragment layout and set it up with manager
@@ -102,7 +102,7 @@ public class ItemListFragment extends Fragment
     // save instanceState of selectedItemIndex variable
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt("selectedItemIndex", selectedItemIndex);
+        outState.putInt(getString(R.string.selected_item_index_key), selectedItemIndex);
         super.onSaveInstanceState(outState);
     }
 
@@ -116,7 +116,6 @@ public class ItemListFragment extends Fragment
     @Override
     public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
         itemList = data;
-
 
         // if there were no problem with fetching data, display it via adapter in RecyclerView
         if (data != null) {

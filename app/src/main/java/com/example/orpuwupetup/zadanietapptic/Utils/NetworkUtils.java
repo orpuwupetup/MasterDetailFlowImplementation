@@ -22,6 +22,9 @@ public class NetworkUtils {
 
     // base url from which we are creating correct url for fetching item details
     private final static String BASE_URL_FOR_TEXT_AND_IMAGE = "http://dev.tapptic.com/test/json.php?";
+    private final static String NAME_PARAMETER = "name";
+    private final static String IMAGE_PARAMETER = "image";
+    private final static String TEXT_PARAMETER = "text";
 
     // method fetching JSON from provided url
     private static String getJSONString(String webURLString, String name) {
@@ -41,7 +44,7 @@ public class NetworkUtils {
                 from different url then this for list, so we are building correct url here
                 */
                 HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL_FOR_TEXT_AND_IMAGE).newBuilder();
-                urlBuilder.addQueryParameter("name", name);
+                urlBuilder.addQueryParameter(NAME_PARAMETER, name);
                 webURLString = urlBuilder.build().toString();
             }
 
@@ -94,8 +97,8 @@ public class NetworkUtils {
             String imageUrl;
             for (int i = 0; i < rootArray.length(); i++) {
                 item = rootArray.getJSONObject(i);
-                name = item.getString("name");
-                imageUrl = item.getString("image");
+                name = item.getString(NAME_PARAMETER);
+                imageUrl = item.getString(IMAGE_PARAMETER);
                 items.add(new Item(name, imageUrl));
             }
         } catch (JSONException jx) {
@@ -119,8 +122,8 @@ public class NetworkUtils {
 
             // find correct fields in JSON and parse them to Item to be returned
             JSONObject rootObject = new JSONObject(JSONString);
-            String text = rootObject.getString("text");
-            String imageUrl = rootObject.getString("image");
+            String text = rootObject.getString(TEXT_PARAMETER);
+            String imageUrl = rootObject.getString(IMAGE_PARAMETER);
             itemDetails = new Item(text, imageUrl);
         } catch (JSONException ex) {
             ex.printStackTrace();

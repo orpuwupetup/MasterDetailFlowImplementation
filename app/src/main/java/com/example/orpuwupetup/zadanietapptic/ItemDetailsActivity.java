@@ -21,15 +21,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         // get data to be displayed about Item details from sent intent
         Intent info = getIntent();
-        Bundle itemInfo = info.getBundleExtra("infoBundle");
-        isTablet = itemInfo.getBoolean("isTablet");
-        itemName = itemInfo.getString("itemName");
-        itemIndex = itemInfo.getInt("itemIndex");
+        Bundle itemInfo = info.getBundleExtra(getString(R.string.bundle_name_for_intent_opening_details_activity));
+        isTablet = itemInfo.getBoolean(getString(R.string.is_tablet_key));
+        itemName = itemInfo.getString(getString(R.string.item_name_key));
+        itemIndex = itemInfo.getInt(getString(R.string.item_index_key));
 
         // if device was rotated, get correct values from savedInstanceState
         if(savedInstanceState != null){
-            itemIndex = savedInstanceState.getInt("itemIndex");
-            itemName = savedInstanceState.getString("itemName");
+            itemIndex = savedInstanceState.getInt(getString(R.string.item_index_key));
+            itemName = savedInstanceState.getString(getString(R.string.item_name_key));
         }
 
         /*
@@ -52,9 +52,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
             */
             Intent upIntent = new Intent(this, MainActivity.class);
             Bundle infoBundle2 = new Bundle();
-            infoBundle2.putInt("itemIndex", itemIndex);
-            infoBundle2.putString("itemName", itemName);
-            upIntent.putExtra("infoBundle2", itemInfo);
+            infoBundle2.putInt(getString(R.string.item_index_key), itemIndex);
+            infoBundle2.putString(getString(R.string.item_name_key), itemName);
+            upIntent.putExtra(getString(R.string.bundle_name_for_intent_opening_main_activity), itemInfo);
             startActivity(upIntent);
 
 
@@ -97,8 +97,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     // save correct values when device is rotated etc.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("itemIndex", itemIndex);
-        outState.putString("itemName", itemName);
+        outState.putInt(getString(R.string.item_index_key), itemIndex);
+        outState.putString(getString(R.string.item_name_key), itemName);
         super.onSaveInstanceState(outState);
     }
 
