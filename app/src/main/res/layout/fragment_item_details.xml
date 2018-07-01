@@ -43,4 +43,23 @@
 
     </ScrollView>
 
+    <TextView
+        android:id="@+id/no_connection_warning"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_internet_details_indicator"/>
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar_indicator"
+        android:layout_width="@dimen/progress_bar_dimensions"
+        android:layout_height="@dimen/progress_bar_dimensions"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
 </android.support.constraint.ConstraintLayout>

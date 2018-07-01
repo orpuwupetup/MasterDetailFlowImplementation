@@ -1,10 +1,15 @@
 package com.example.orpuwupetup.zadanietapptic;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
@@ -15,11 +20,19 @@ and to display both list and details in landscape mode of bigger devices (tablet
 */
 public class MainActivity extends AppCompatActivity implements ItemListFragment.DeepClickListener{
 
+    // constants
     private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
+    private final static String DEFAULT_SELECTED_ITEM_NAME = "1";
+    private final static int DEFAULT_SELECTED_ITEM_INDEX = 0;
+
     public static boolean isTablet;
     private android.support.v4.app.FragmentManager fragmentManager;
-    private int selectedItemIndex;
-    private String selectedItemName;
+    private int selectedItemIndex = DEFAULT_SELECTED_ITEM_INDEX;
+    private String selectedItemName = DEFAULT_SELECTED_ITEM_NAME;
+    private TextView connectionWarning;
+    private View divider;
+    private boolean isConnected;
+
     ItemListFragment list;
     public static int BACK_PRESSED_IN_DETAILS = 0;
 
@@ -30,6 +43,11 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         // setting boolean indicating if app is opened on phone or on tablet
         isTablet = isTablet();
+
+        // checking for internet connection
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         // saving reference to fragmentManager for use in further parts of the app
         fragmentManager =  getSupportFragmentManager();
@@ -67,14 +85,21 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         list = new ItemListFragment();
         list.setUrl(PROVIDED_URL_ADDRESS);
         list.setDeepListener(this);
+
+        divider = findViewById(R.id.pane_divider);
+        connectionWarning = findViewById(R.id.no_connection_warning);
         if(isTablet && isLandscape()){
 
+            if(isConnected) {
+
+                connectionWarning.setVisibility(View.GONE);
+                divider.setVisibility(View.VISIBLE);
             /*
             we have to create ItemDetailsFragment only when we are in landscape orientation, while
             using tablet
             */
-            ItemDetailsFragment tabletDetails = new ItemDetailsFragment();
-                if(itemInfo != null) {
+                ItemDetailsFragment tabletDetails = new ItemDetailsFragment();
+                if (itemInfo != null) {
 
                     /*
                     itemInfo is a bundle included in landscapeIntent, so if it is different than
@@ -92,14 +117,14 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             if savedInstanceState is different than null, we want to to take values from it, even if
             landscapeIntent is different than null
             */
-            if(savedInstanceState != null){
-                selectedItemIndex = savedInstanceState.getInt("selectedIndex");
-                selectedItemName = savedInstanceState.getString("selectedName");
-            }
+                if (savedInstanceState != null) {
+                    selectedItemIndex = savedInstanceState.getInt("selectedIndex");
+                    selectedItemName = savedInstanceState.getString("selectedName");
+                }
 
-            tabletDetails.setItemIndex(selectedItemIndex);
-            tabletDetails.setItemName(selectedItemName);
-            list.setSelectedItemIndex(selectedItemIndex);
+                tabletDetails.setItemIndex(selectedItemIndex);
+                tabletDetails.setItemName(selectedItemName);
+                list.setSelectedItemIndex(selectedItemIndex);
 
             /*
             if savedInstanceState is null, we want to add new fragments to correct containers, but
@@ -108,23 +133,28 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             scrolling fragment, in stead of two, one scrolling, and one stationary (been there,
             done that)
             */
-            if(savedInstanceState == null) {
-                fragmentManager.beginTransaction()
-                        .add(R.id.details_tablet_container, tabletDetails)
-                        .commit();
-                fragmentManager.beginTransaction()
-                        .add(R.id.list_tablet_container, list)
-                        .commit();
+                if (savedInstanceState == null) {
+                    fragmentManager.beginTransaction()
+                            .add(R.id.details_tablet_container, tabletDetails)
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .add(R.id.list_tablet_container, list)
+                            .commit();
+                } else {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.details_tablet_container, tabletDetails)
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.list_tablet_container, list)
+                            .commit();
+                }
             }else{
-                fragmentManager.beginTransaction()
-                        .replace(R.id.details_tablet_container, tabletDetails)
-                        .commit();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.list_tablet_container, list)
-                        .commit();
+                connectionWarning.setVisibility(View.VISIBLE);
+                divider.setVisibility(View.GONE);
             }
         }else{
 
+            list.setSelectedItemIndex(selectedItemIndex);
             // same as in previous comment ^
             if(savedInstanceState == null) {
                 fragmentManager.beginTransaction()

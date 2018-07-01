@@ -1,6 +1,9 @@
 package com.example.orpuwupetup.zadanietapptic;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemsAsyncLoader;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
@@ -30,11 +35,14 @@ public class ItemListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<List<Item>>, ItemAdapter.ListItemClickListener {
 
     private RecyclerView list;
+    private TextView connectionWarning;
+    private ProgressBar progressIndicator;
     private String url;
     private int selectedItemIndex;
     private ItemAdapter adapter;
     private DeepClickListener deepListener;
     private List<Item> itemList;
+    private boolean isConnected;
 
     // Mandatory empty constructor for initiating the fragment
     public ItemListFragment() {
@@ -50,6 +58,11 @@ public class ItemListFragment extends Fragment
         // inflate item details fragment layout
         View rootView = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        // checking internet connection
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
         /*
         if savedInstanceState is not 'empty', check there which item on the list should be selected
         */
@@ -59,11 +72,22 @@ public class ItemListFragment extends Fragment
 
         // get reference for RecyclerView included in fragment layout and set it up with manager
         list = rootView.findViewById(R.id.rv_items);
+        connectionWarning = rootView.findViewById(R.id.no_connection_warning);
+        progressIndicator = rootView.findViewById(R.id.progress_bar_indicator);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         list.setLayoutManager(layoutManager);
 
-        // initiate custom AsyncLoader to fetch data from the web on the background thread
-        getLoaderManager().initLoader(1, null, this);
+        /*
+        initiate custom AsyncLoader to fetch data from the web on the background thread if there is
+        internet connection available
+        */
+        if(isConnected) {
+            connectionWarning.setVisibility(View.GONE);
+            progressIndicator.setVisibility(View.VISIBLE);
+            getLoaderManager().initLoader(1, null, this);
+        }else{
+            connectionWarning.setVisibility(View.VISIBLE);
+        }
 
 
         // return View
@@ -88,6 +112,7 @@ public class ItemListFragment extends Fragment
     public void onLoadFinished(@NonNull Loader<List<Item>> loader, List<Item> data) {
         itemList = data;
 
+
         // if there were no problem with fetching data, display it via adapter in RecyclerView
         if (data != null) {
 
@@ -99,8 +124,7 @@ public class ItemListFragment extends Fragment
             adapter = new ItemAdapter(data.size(), this, data, textColor);
             list.setAdapter(adapter);
 
-
-//            Log.d("itemlistfragment", "" + (v == null));
+            progressIndicator.setVisibility(View.GONE);
         }
 
 
