@@ -1,7 +1,5 @@
 package com.example.orpuwupetup.zadanietapptic.data;
 
-import com.example.orpuwupetup.zadanietapptic.R;
-
 /**
  * Created by cezar on 28.06.2018.
  */

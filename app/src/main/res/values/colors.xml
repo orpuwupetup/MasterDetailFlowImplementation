@@ -4,10 +4,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="transparent">#00000000</color>
+
     <color name="backgroundSelected">#840000</color>
     <color name="backgroundFocused">#015c0b</color>
     <color name="backgroundPressed">#101999</color>
-    <color name="backgroundNormal">#00000000</color>
+    <color name="backgroundNormal">@color/transparent</color>
 
     <color name="textOtherState">#ffffff</color>
     <color name="textNormalState">#000000</color>

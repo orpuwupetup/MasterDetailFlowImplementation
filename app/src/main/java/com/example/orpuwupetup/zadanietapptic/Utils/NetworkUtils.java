@@ -32,7 +32,7 @@ public class NetworkUtils {
             /*
             this if is put here so that we can use one method for fetching data for entire list of
             items, as well as for single item details. because of this we are using just one
-            OkHttpClient, and saving some of the phones memory
+            OkHttpClient, and saving some of the phones memory (Singleton would also work fine)
             */
             if (name != null) {
 

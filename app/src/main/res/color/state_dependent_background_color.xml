@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:drawable="@color/backgroundPressed"
+        android:color="@color/backgroundPressed"
+        android:state_pressed="true"
+        />
+    <item
         android:drawable="@color/backgroundFocused"
         android:color="@color/backgroundFocused"
         android:state_focused="true"
@@ -9,11 +14,6 @@
         android:drawable="@color/backgroundSelected"
         android:color="@color/backgroundSelected"
         android:state_selected="true"
-        />
-    <item
-        android:drawable="@color/backgroundPressed"
-        android:color="@color/backgroundPressed"
-        android:state_pressed="true"
         />
     <item
         android:drawable="@color/backgroundNormal"

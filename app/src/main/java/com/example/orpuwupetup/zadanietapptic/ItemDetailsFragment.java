@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.orpuwupetup.zadanietapptic.Utils.ItemDetailsAsyncLoader;
 import com.example.orpuwupetup.zadanietapptic.data.Item;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -74,6 +75,11 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
         internet connection, if not, tell it to the user)
         */
         if(isConnected) {
+
+            /*
+            show progress bar while data is loading, so that user will know that something is
+            happening (better user experience)
+            */
             progressIndicator.setVisibility(View.VISIBLE);
             connectionWarning.setVisibility(View.GONE);
             getLoaderManager().initLoader(2, null, this);
@@ -84,6 +90,7 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
         // return View
         return rootView;
     }
+
     /*
     saving state of important variables when device is rotated (or fragment is killed in other way)
     */
@@ -113,6 +120,10 @@ public class ItemDetailsFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(@NonNull Loader<Item> loader, Item data) {
         if(data != null) {
             itemText.setText(data.getText());
+
+            Picasso.with(getActivity()).load(data.getImageUrl()).fit().centerInside().into(itemImage);
+
+            // hide progress bar when data is loaded
             progressIndicator.setVisibility(View.GONE);
         }
     }

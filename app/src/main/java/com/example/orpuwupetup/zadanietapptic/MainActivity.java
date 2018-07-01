@@ -18,7 +18,7 @@ import com.example.orpuwupetup.zadanietapptic.data.ItemAdapter;
 activity used to display list of Items while in portrait mode and landscape mode in smaller devices
 and to display both list and details in landscape mode of bigger devices (tablets)
 */
-public class MainActivity extends AppCompatActivity implements ItemListFragment.DeepClickListener{
+public class MainActivity extends AppCompatActivity implements ItemListFragment.DeepClickListener {
 
     // constants
     private final static String PROVIDED_URL_ADDRESS = "http://dev.tapptic.com/test/json.php";
@@ -26,15 +26,14 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     private final static int DEFAULT_SELECTED_ITEM_INDEX = 0;
 
     public static boolean isTablet;
+    public static int BACK_PRESSED_IN_DETAILS = 0;
+    ItemListFragment list;
     private android.support.v4.app.FragmentManager fragmentManager;
     private int selectedItemIndex = DEFAULT_SELECTED_ITEM_INDEX;
     private String selectedItemName = DEFAULT_SELECTED_ITEM_NAME;
     private TextView connectionWarning;
     private View divider;
     private boolean isConnected;
-
-    ItemListFragment list;
-    public static int BACK_PRESSED_IN_DETAILS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         // saving reference to fragmentManager for use in further parts of the app
-        fragmentManager =  getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
         /*
         we are fetching intent here, because if Main is opened from the Details activity after it
@@ -65,13 +64,13 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         /*
         fetching data from savedInstanceState, after activity is recreated after orientation change
         */
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             selectedItemIndex = savedInstanceState.getInt("selectedIndex");
             selectedItemName = savedInstanceState.getString("selectedName");
         }
 
         // TODO delete log
-        Log.d("MainIndexTOP", ""+selectedItemIndex);
+        Log.d("MainIndexTOP", "" + selectedItemIndex);
 
         /*
         code for creating new fragments, filling and displaying them according to when they are
@@ -88,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
         divider = findViewById(R.id.pane_divider);
         connectionWarning = findViewById(R.id.no_connection_warning);
-        if(isTablet && isLandscape()){
+        if (isTablet && isLandscape()) {
 
-            if(isConnected) {
+            if (isConnected) {
 
                 connectionWarning.setVisibility(View.GONE);
                 divider.setVisibility(View.VISIBLE);
@@ -148,30 +147,46 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                             .replace(R.id.list_tablet_container, list)
                             .commit();
                 }
-            }else{
+            } else {
                 connectionWarning.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.GONE);
             }
-        }else{
 
+        /*
+        if we are using app on the tablet, and we are in DetailsActivity in portrait mode, and we
+        turn our tablet to landscape mode, two-pane layout is opening, but after we go back to
+        portrait mode, we want to display detailActivity again, because that was last activity that
+        was opened before turning to landscape
+        */
+        } else if (isTablet && !isLandscape() && ItemDetailsActivity.wasLandscapeFromDetails) {
+
+            // get data to be displayed about Item details from sent intent
+            Intent info = new Intent(this, ItemDetailsActivity.class);
+            itemInfo = new Bundle();
+            itemInfo.putBoolean("isTablet", isTablet);
+            itemInfo.putString("itemName", selectedItemName);
+            itemInfo.putInt("itemIndex", selectedItemIndex);
+            info.putExtra("infoBundle", itemInfo);
+            ItemDetailsActivity.wasLandscapeFromDetails = false;
+            startActivity(info);
+        } else {
             list.setSelectedItemIndex(selectedItemIndex);
-            // same as in previous comment ^
-            if(savedInstanceState == null) {
+
+            // same as in comment in line 128
+            if (savedInstanceState == null) {
                 fragmentManager.beginTransaction()
                         .add(R.id.list_containter, list)
                         .commit();
-            }else{
+            } else {
                 fragmentManager.beginTransaction()
                         .replace(R.id.list_containter, list)
                         .commit();
-
             }
         }
 
         //TODO delete Log
-        Log.d("MainIndexBOTTOM", selectedItemIndex+"");
+        Log.d("MainIndexBOTTOM", selectedItemIndex + "");
         ItemAdapter.selectedItem = selectedItemIndex;
-
     }
 
     /*
@@ -180,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     */
     @Override
     public void onBackPressed() {
-        if(!isLandscape() && !isTablet) {
+        if (!isLandscape() && !isTablet) {
             super.onBackPressed();
         }
     }
@@ -199,12 +214,21 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     */
     @Override
     protected void onPostResume() {
-        if(BACK_PRESSED_IN_DETAILS == 1) {
+        if (BACK_PRESSED_IN_DETAILS == 1) {
             selectedItemIndex = ItemDetailsActivity.selectedItemIndex;
             list.setSelectedItemIndex(selectedItemIndex);
 
+            /*
+            if we go back from portrait details activity after returning there from tablet landscape
+            orientation, we have to put our list fragment inside its container again
+            */
+            if (!isLandscape() && isTablet()) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.list_containter, list)
+                        .commit();
+            }
             // TODO delete log
-            Log.d("indexfromdetails", ""+ selectedItemIndex);
+            Log.d("indexfromdetails", "" + selectedItemIndex);
             BACK_PRESSED_IN_DETAILS = 0;
         }
         super.onPostResume();
@@ -218,7 +242,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     public void deepOnListClick(String name, int clickedItemIndex) {
 
         //TODO delete Toast
-        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item index" + clickedItemIndex, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "clicked item name" + name + "\n" + "clicked item index"
+                + clickedItemIndex, Toast.LENGTH_SHORT).show();
 
         // save what Item was clicked to mark it as selected
         selectedItemIndex = clickedItemIndex;
@@ -231,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         if we are in landscape orientation while using tablet, we want to both mark Item in list as
         selected and display it in the ItemDetails fragment
         */
-        if(isTablet && isLandscape()){
+        if (isTablet && isLandscape()) {
             ItemDetailsFragment newTabletDetails = new ItemDetailsFragment();
             newTabletDetails.setItemName(name);
             newTabletDetails.setItemIndex(clickedItemIndex);
@@ -244,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
         what orientation device is currently in into bundle, and send it via intent to new item
         details activity
         */
-        }else{
+        } else {
             Bundle itemInfoBundle = new Bundle();
             itemInfoBundle.putString("itemName", name);
             itemInfoBundle.putInt("itemIndex", clickedItemIndex);
@@ -268,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
     method which checks if we are using tablet by checking if Views specified only for tablets are
     created or not (both in landscape and portrait modes)
     */
-    private boolean isTablet(){
+    private boolean isTablet() {
         return findViewById(R.id.tablet_constraint_view) != null
                 || findViewById(R.id.tablet_landscape_layout) != null;
     }

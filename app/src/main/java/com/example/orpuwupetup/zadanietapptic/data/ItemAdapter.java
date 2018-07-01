@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.orpuwupetup.zadanietapptic.R;
+import com.squareup.picasso.Picasso;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -32,17 +33,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private int numberOfItems;
     private ColorStateList textColor;
     public static int selectedItem = 0;
+    Context context;
 
     /*
     constructor taking List of items to display, custom clickListener to provide responsiveness
     to clicks, numberOfItems variable needed to construct RecyclerView and ColorStateList for
     changing color of the text according to what state it is in
     */
-    public ItemAdapter(int numberOfItems, ListItemClickListener listener, List<Item> itemList, ColorStateList textColor) {
+    public ItemAdapter(int numberOfItems, ListItemClickListener listener, List<Item> itemList, ColorStateList textColor, Context context) {
         this.itemList = itemList;
         this.onClickListener = listener;
         this.numberOfItems = numberOfItems;
         this.textColor = textColor;
+        this.context = context;
     }
 
     /*
@@ -75,6 +78,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         holder.listItemText.setText(itemList.get(position).getText());
         holder.listItemText.setTextColor(textColor);
+
+        Picasso.with(context).load(itemList.get(position).getImageUrl()).fit().centerInside().into(holder.listItemImage);
         if(position == selectedItem) {
             holder.mainLayout.setSelected(true);
         }else{

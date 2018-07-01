@@ -83,6 +83,11 @@ public class ItemListFragment extends Fragment
         */
         if(isConnected) {
             connectionWarning.setVisibility(View.GONE);
+
+            /*
+            show progress bar while data is loading, so that user will know that something is
+            happening (better user experience)
+            */
             progressIndicator.setVisibility(View.VISIBLE);
             getLoaderManager().initLoader(1, null, this);
         }else{
@@ -121,13 +126,12 @@ public class ItemListFragment extends Fragment
             background color (via xml code in layout xml file) to test both methods
             */
             ColorStateList textColor = getResources().getColorStateList(R.color.state_dependent_text_color);
-            adapter = new ItemAdapter(data.size(), this, data, textColor);
+            adapter = new ItemAdapter(data.size(), this, data, textColor, getActivity());
             list.setAdapter(adapter);
 
+            // hide progress bar when data is loaded
             progressIndicator.setVisibility(View.GONE);
         }
-
-
     }
 
     @Override
@@ -158,6 +162,16 @@ public class ItemListFragment extends Fragment
         the same ViewHolder, but with different item indexes
         */
         ItemAdapter.selectedItem = clickedItemIndex;
+
+        /*
+        if previously selected ViewHolder is not on screen, but list wasn't scrolled far enough for
+        it to be recycled (and deselected), it is still null (won't be deselected automatically in
+        line 152), so we have to notify adapter manually that data set has changed so that it will
+        deselect it, and 2 views won't be selected simultaneously
+        */
+        if(v == null) {
+            adapter.notifyDataSetChanged();
+        }
 
         /*
         this method takes index of clicked item, finds correct Item name corresponding to it in the

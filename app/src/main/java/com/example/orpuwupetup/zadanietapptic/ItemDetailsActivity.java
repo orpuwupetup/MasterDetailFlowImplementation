@@ -12,6 +12,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     public static int selectedItemIndex;
     int itemIndex;
     private String itemName;
+    public static boolean wasLandscapeFromDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
         if(isLandscape() && isTablet){
 
             /*
+            notify that while using tablet, landscape orientation was opened from the details
+            activity, so that we can go back to it from Main, after user will change screen rotation
+            to portrait again
+            */
+            wasLandscapeFromDetails = true;
+
+            /*
             create intent and bundle to put into it, fill this bundle with correct data and send it
             to MainActivity
             */
@@ -48,6 +56,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
             infoBundle2.putString("itemName", itemName);
             upIntent.putExtra("infoBundle2", itemInfo);
             startActivity(upIntent);
+
+
 
             /*
             if the savedInstanceState is "empty", create new item detail fragment and display it on
