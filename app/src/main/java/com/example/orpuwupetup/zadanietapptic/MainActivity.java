@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Display;
@@ -164,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
                 connectionWarning.setVisibility(View.VISIBLE);
                 refresh.setVisibility(View.VISIBLE);
                 divider.setVisibility(View.GONE);
+                for (Fragment fragment:getSupportFragmentManager().getFragments()) {
+                    getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                }
             }
 
         /*
@@ -189,9 +193,6 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
             this check is here to prevent creating detail and list fragment in specific, provided
             case
             */
-        }else if (!isConnected && isLandscape() && isTablet){
-            refresh.setVisibility(View.VISIBLE);
-            connectionWarning.setVisibility(View.VISIBLE);
         } else {
             list.setSelectedItemIndex(selectedItemIndex);
 
