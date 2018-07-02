@@ -130,8 +130,8 @@ public class MainActivity extends AppCompatActivity implements ItemListFragment.
 
                 if (wasRecreatedAfterNoConnection){
                     wasRecreatedAfterNoConnection = false;
-                    selectedItemIndex = 1;
-                    selectedItemName = "1";
+                    selectedItemIndex = DEFAULT_SELECTED_ITEM_INDEX;
+                    selectedItemName = DEFAULT_SELECTED_ITEM_NAME;
                 }
 
                 tabletDetails.setItemIndex(selectedItemIndex);
